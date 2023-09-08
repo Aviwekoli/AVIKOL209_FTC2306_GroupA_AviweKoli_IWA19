@@ -11,3 +11,6 @@
 # As a user, I want to filter books by author so that I can find books to read by authors that I enjoy.
 # As a user, I want to filter books by genre so that I can find books to read in genres that I enjoy.
 # As a user, I want to toggle between dark and light modes so that I can use the app comfortably at night.
+
+# SLIDE SHOW PRESENTATION
+[Capstone PowerPoint.pptx](https://github.com/Aviwekoli/AVIKOL209_FTC2306_GroupA_AviweKoli_IWA19/files/12563372/Capstone.PowerPoint.pptx)
