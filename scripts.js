@@ -67,7 +67,6 @@ const bookLength = books.length;
         image: books[i].image,
         summary: books[i].description,
         genre: books[i].genres,
-        //genres: genres[books[i].genres],
         published: books[i].published,
      };
     bookArray.push(book);
@@ -266,11 +265,11 @@ function handlerSettings(event){
  */
 
  const handlerSaveSettings = (event) => {
-    const {settings: {overlay, theme, save}} = html;
+    const {settings: {overlay, theme, form, save}} = html;
     event.preventDefault();
     const selectedTheme = theme.value; 
 
-    settingsTheme.value = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'night' : 'day';
+     const v = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'night' : 'day';
 
     if (selectedTheme === 'night'){
         document.documentElement.style.setProperty('--color-light', `rgb(${css[selectedTheme][0]})`);
@@ -278,32 +277,14 @@ function handlerSettings(event){
     }
     
     if (selectedTheme === 'day'){
-        document.documentElement.style.setProperty('--color-light', `rgb(${css[selectedTheme][0]})`);
-        document.documentElement.style.setProperty('--color-dark', `rgb(${css[selectedTheme][1]})`);
+        document.documentElement.style.setProperty('--color-light', `rgb(${css[selectedTheme][1]})`);
+        document.documentElement.style.setProperty('--color-dark', `rgb(${css[selectedTheme][0]})`);
 
     }
     overlay.close();
+    form.reset()
 }
-//     for (const [property, value] of Object.entries(themeStyle)){
-//         document.documentElement.style.setProperty(property, value)
-//     }
-//     console.log(themeStyle);
-//     console.log(day)
-//     localStorage.setItem('theme', selectedTheme);
-
-//    overlay.close();
   
-//  };
-//  function loadTheme() {
-//     const {settings: {overlay, theme, save}} = html;
-//     const savedTheme = localStorage.getItem('theme');
-//     if (savedTheme) {
-//       theme.value = savedTheme;
-//       handlerSaveSettings();
-//     }
-//   }
-//   //html.settings.theme.addEventListener('change', handlerSaveSettings)
-//   window.addEventListener('load', loadTheme);
 /**
  * This handler fires when a user clicks on the seach button 
  * A dialog overlay is shown to allow the user to search a book,
@@ -355,8 +336,8 @@ const handlerSearchSave = (event) => {
         overlay.close();
         form.reset();
         const allBook = renderPreview(bookArray);
-        const a = allBook.querySelectorAll('button')
-        for (const book of a){
+        const allBookButtons = allBook.querySelectorAll('button')
+        for (const book of allBookButtons){
             html.main.button.style.display = 'none'
             book.classList.replace('preview', 'preview_hidden');
          }
@@ -394,7 +375,7 @@ html.main.list.addEventListener('click', activeHandle);
 
 html.header.settings.addEventListener('click', handlerSettings);
 
-//html.settings.save.addEventListener('click', handlerSaveSettings);
+html.settings.save.addEventListener('click', handlerSaveSettings);
 
 html.header.search.addEventListener('click', handlerSearch);
 
