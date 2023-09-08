@@ -83,7 +83,6 @@ const bookLength = books.length;
 const createGenresHtmlOptions = () =>{
     const fragment = document.createDocumentFragment()
     const genresArray = ['All Genres'].concat(Object.values(genres))
-    //const genresArray = (Object.values(genres))
     const {search: {genres: genresElement}} = html;    
     for (const genre of genresArray) {
         const option = document.createElement('option')
@@ -175,12 +174,9 @@ const renderPreview = (booksToShow) => {
             </div>`;
 
             fragment.appendChild(bookList);
-            list.appendChild(fragment);
-            //html.main.appendChild(list)
-            
+            list.appendChild(fragment);            
         } 
-        return list;
-        
+        return list;       
 }
 
 /**
@@ -234,14 +230,12 @@ function activeHandle (event){
             currentBook = book;
         }
     }
-    console.log(image.src);
     title.innerHTML = currentBook.title;
     subtitle.innerHTML = `${currentBook.author} (${new Date((currentBook.published)).getFullYear()})`;
     summary.innerHTML = currentBook.summary;
     image.src = currentBook.image;
     imageBlur.src = currentBook.image;
     overlay.show();
-    console.log(currentBook.title)
     close.addEventListener('click', function(event){
         event.preventDefault();
         overlay.close();
@@ -271,26 +265,25 @@ function handlerSettings(event){
  * @param {Event} event
  */
 
-// const handlerSaveSettings = (event) => {
-//     const {settings: {overlay, theme, save}} = html;
-//     event.preventDefault();
-//     const selectedTheme = theme.value; 
+ const handlerSaveSettings = (event) => {
+    const {settings: {overlay, theme, save}} = html;
+    event.preventDefault();
+    const selectedTheme = theme.value; 
 
-//     //settingsTheme.value = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'night' : 'day';
+    settingsTheme.value = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'night' : 'day';
 
+    if (selectedTheme === 'night'){
+        document.documentElement.style.setProperty('--color-light', `rgb(${css[selectedTheme][0]})`);
+        document.documentElement.style.setProperty('--color-dark', `rgb(${css[selectedTheme][1]})`);
+    }
     
-//     if (selectedTheme === 'night'){
-//         document.documentElement.style.setProperty('--color-light', `rgb(${css[selectedTheme][0]})`);
-//         document.documentElement.style.setProperty('--color-dark', `rgb(${css[selectedTheme][1]})`);
-//     }
-    
-//     if (selectedTheme === 'day'){
-//         document.documentElement.style.setProperty('--color-light', `rgb(${css[selectedTheme][0]})`);
-//         document.documentElement.style.setProperty('--color-dark', `rgb(${css[selectedTheme][1]})`);
+    if (selectedTheme === 'day'){
+        document.documentElement.style.setProperty('--color-light', `rgb(${css[selectedTheme][0]})`);
+        document.documentElement.style.setProperty('--color-dark', `rgb(${css[selectedTheme][1]})`);
 
-//     }
-//     overlay.close();
-// }
+    }
+    overlay.close();
+}
 //     for (const [property, value] of Object.entries(themeStyle)){
 //         document.documentElement.style.setProperty(property, value)
 //     }
@@ -362,7 +355,6 @@ const handlerSearchSave = (event) => {
         overlay.close();
         form.reset();
         const allBook = renderPreview(bookArray);
-        console.log(allBook)
         const a = allBook.querySelectorAll('button')
         for (const book of a){
             html.main.button.style.display = 'none'
@@ -376,7 +368,6 @@ const handlerSearchSave = (event) => {
 
     }else{
         const allBook = renderPreview(bookArray);
-        console.log(allBook)
         const a = allBook.querySelectorAll('button')
         for (const book of a){
             html.main.button.style.display = 'none'
