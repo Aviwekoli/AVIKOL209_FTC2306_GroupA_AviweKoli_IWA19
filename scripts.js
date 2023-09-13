@@ -255,35 +255,56 @@ function handlerSettings(event){
         overlay.close();
     })
 } 
+//Initial theme settings for the app which are based on the system preference
+const initialTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "night" : "day";
+html.settings.theme.value = initialTheme;
+document.documentElement.style.setProperty("--color-dark", css[initialTheme][1]);
+document.documentElement.style.setProperty("--color-light", css[initialTheme][0]);
 
 /**
- * This handler fires when the user clicks on the save button to change theme settings,
- * This allows the user to toggle between dark and light mode,
- * the function also determines if the user preverence from their desktop is dark or light modes,
- * and adapts accordingly
+ * A handler that fires when a user selects a theme form the settings drop down,
+ * the function basically stores the selected value in a variable,
+ * but no changes are applied to the application,
+ * and the selected value will be stored in local storage.
  * @param {Event} event
  */
-
- const handlerSaveSettings = (event) => {
-    const {settings: {overlay, theme, form, save}} = html;
+let selectedTheme;
+const themeValue = (event) =>{
+    const {settings: {theme}} = html;
     event.preventDefault();
-    const selectedTheme = theme.value; 
-
-     const v = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'night' : 'day';
-
-    if (selectedTheme === 'night'){
-        document.documentElement.style.setProperty('--color-light', `rgb(${css[selectedTheme][0]})`);
-        document.documentElement.style.setProperty('--color-dark', `rgb(${css[selectedTheme][1]})`);
-    }
-    
-    if (selectedTheme === 'day'){
-        document.documentElement.style.setProperty('--color-light', `rgb(${css[selectedTheme][1]})`);
-        document.documentElement.style.setProperty('--color-dark', `rgb(${css[selectedTheme][0]})`);
-
+    selectedTheme = theme.value;
+    localStorage.setItem('theme', selectedTheme);
+};
+/**
+ * A handler that fires when a user saves the theme settings,
+ * A theme will be applied based on whether the user chose "night" or "day",
+ * and then the settings overlay will be closed
+ * @param {Event} event
+ */
+const saveThemeHandler = (event) => {
+    const {settings: {overlay}} = html;
+    if (selectedTheme){
+        document.documentElement.style.setProperty("--color-dark", css[selectedTheme][1]);
+        document.documentElement.style.setProperty("--color-light", css[selectedTheme][0]);
     }
     overlay.close();
-    form.reset()
-}
+};
+
+/**
+ * The handler fires when a the page is refreshed or reloaded
+ * The functions gets the theme value stored in local storage and calls the saveThemeHandler
+ * to apply the changes based on the value selected before the page is refreshed
+ * @param {Event} event
+ */
+const loadTheme = (event) =>{
+    const {settings: {theme}} = html;
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+        selectedTheme = savedTheme;
+        saveThemeHandler(selectedTheme);
+        theme.value = savedTheme;
+    }
+};
   
 /**
  * This handler fires when a user clicks on the seach button 
@@ -375,8 +396,45 @@ html.main.list.addEventListener('click', activeHandle);
 
 html.header.settings.addEventListener('click', handlerSettings);
 
-html.settings.save.addEventListener('click', handlerSaveSettings);
+html.settings.theme.addEventListener("change", themeValue);
+
+html.settings.form.addEventListener('submit', saveThemeHandler);
+
+window.addEventListener('load', loadTheme);
 
 html.header.search.addEventListener('click', handlerSearch);
 
 html.search.save.addEventListener('click', handlerSearchSave);
+
+
+
+
+/**
+ * This handler fires when the user clicks on the save button to change theme settings,
+ * This allows the user to toggle between dark and light mode,
+ * the function also determines if the user preverence from their desktop is dark or light modes,
+ * and adapts accordingly
+ * @param {Event} event
+ */
+
+//  const handlerSaveSettings = (event) => {
+//     const {settings: {overlay, theme, form, save}} = html;
+//     event.preventDefault();
+//     const selectedTheme = theme.value; 
+
+//      const v = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'night' : 'day';
+
+//     if (selectedTheme === 'night'){
+//         document.documentElement.style.setProperty('--color-light', `rgb(${css[selectedTheme][0]})`);
+//         document.documentElement.style.setProperty('--color-dark', `rgb(${css[selectedTheme][1]})`);
+//     }
+    
+//     if (selectedTheme === 'day'){
+//         document.documentElement.style.setProperty('--color-light', `rgb(${css[selectedTheme][0]})`);
+//         document.documentElement.style.setProperty('--color-dark', `rgb(${css[selectedTheme][1]})`);
+
+//     }
+//     overlay.close();
+//     form.reset()
+// }
+//html.settings.form.addEventListener('click', handlerSaveSettings);
